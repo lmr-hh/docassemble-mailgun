@@ -32,7 +32,7 @@ class Mailgun:
         return ", ".join(sanitize_addresses(email_stringer(email,
                                                            include_name=True)))
 
-    def send_lmr_email(
+    def send_email(
             self,
             to=None,
             sender=None,
@@ -72,11 +72,12 @@ class Mailgun:
         data = {
             "from": sender or self.default_sender,
             "to": Mailgun._join_email(to),
-            "subject": subject or template.subject,
             "template": self.template,
             "text": text,
             "v:content": html
         }
+        if subject or (template and template.subject):
+            data["subject"] = subject or template.subject
         if cc:
             data["cc"] = Mailgun._join_email(cc)
         if bcc:
